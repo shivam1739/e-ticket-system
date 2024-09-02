@@ -3,8 +3,21 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { getRoleByNameService } from "./role.services.js";
+import User from "../models/user.js";
+import Role from "../models/role.js";
 
-
+/**
+ * Registers a new user and assigns a role to the user.
+ *
+ * @param {Object} body - The user data.
+ * @param {string} body.email - The user's email address.
+ * @param {string} body.password - The user's password.
+ * @param {string} body.username - The user's username.
+ * @param {string} [body.image] - The URL of the user's profile image (optional).
+ * @param {string} userType - The name of the role to be assigned to the user.
+ * @returns {Promise<User>} - The created user object.
+ * @throws {Error} - Throws an error if the role type is not found or if user creation fails.
+ */
 
 const signupService = async (body, userType) => {
 
@@ -18,7 +31,6 @@ const signupService = async (body, userType) => {
             email: body.email,
             password: body.password,
             username: body.username,
-            image: body.image,
         });
         await signupResponse.addRole(role);
         return signupResponse;
@@ -28,6 +40,15 @@ const signupService = async (body, userType) => {
         throw new Error(message)
     }
 };
+
+
+/**
+ * Retrieves a user by their email address.
+ *
+ * @param {string} emailData - The email address of the user to retrieve.
+ * @returns {Promise<User|null>} - The user object if found, otherwise null.
+ * @throws {Error} - Throws an error if there is a problem with the query.
+ */
 
 const getUserByEmail = async (emailData) => {
     try {
@@ -47,6 +68,15 @@ const getUserByEmail = async (emailData) => {
     }
 };
 
+
+/**
+ * Retrieves a user by their ID.
+ *
+ * @param {number} id - The ID of the user to retrieve.
+ * @returns {Promise<User|null>} - The user object if found, otherwise null.
+ * @throws {Error} - Throws an error if there is a problem with the query.
+ */
+
 const getUserById = async (id) => {
     const response = await User.findOne({
         where: {
@@ -58,10 +88,28 @@ const getUserById = async (id) => {
     return response;
 };
 
+
+/**
+ * Compares a plain text password with a hashed password.
+ *
+ * @param {string} pass - The plain text password to compare.
+ * @param {string} hashPass - The hashed password to compare against.
+ * @returns {boolean} - Returns true if the passwords match, otherwise false.
+ */
+
 const verifyPassword = (pass, hashPass) => {
     const response = bcrypt.compareSync(pass, hashPass);
     return response;
 };
+
+
+/**
+ * Verifies a JWT token.
+ *
+ * @param {string} token - The JWT token to verify.
+ * @returns {Object|null} - The decoded token payload if the token is valid, otherwise null.
+ * @throws {Error} - Throws an error if the token is invalid or expired.
+ */
 
 const verifyToken = (token) => {
     try {
@@ -71,6 +119,16 @@ const verifyToken = (token) => {
         console.log(err);
     }
 };
+
+
+/**
+ * Adds a role to a user.
+ *
+ * @param {number} userId - The ID of the user to whom the role will be added.
+ * @param {number} roleId - The ID of the role to be added to the user.
+ * @returns {Promise<User>} - The updated user object with the new role.
+ * @throws {Error} - Throws an error if the user or role is not found, or if adding the role fails.
+ */
 
 const addRollToUser = async (userId, roleId) => {
     const user = await User.findOne({
@@ -94,3 +152,4 @@ export {
     addRollToUser,
     getUserById,
 };
+

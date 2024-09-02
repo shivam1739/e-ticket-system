@@ -6,7 +6,6 @@ const createRoleController = async (req, res) => {
     try {
 
         const data = req.body;
-        console.log(">>>>>>>>>>>", data)
         const createdRole = await createRoleService(data);
 
         res.status(201).json(createdRole);

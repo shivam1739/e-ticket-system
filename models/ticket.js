@@ -2,8 +2,6 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 
 import { generateTicketCode } from '../utils/ticketUtils.js';
-import Event from './events.js';
-import User from './user.js';
 
 const Ticket = sequelize.define('Ticket', {
     id: {
@@ -39,16 +37,9 @@ const Ticket = sequelize.define('Ticket', {
     timestamps: true,
     hooks: {
         beforeCreate: (ticket) => {
-            ticket.code = generateTicketCode(); // Assign a unique code before saving
+            ticket.code = generateTicketCode();
         },
     },
 });
 
-// Associations
-
-Ticket.belongsTo(Event, { foreignKey: 'eventId', as: 'event' }); // Many-to-One with Event
-Event.hasMany(Ticket, { foreignKey: 'eventId', as: 'tickets' });
-
-Ticket.belongsTo(User, { foreignKey: 'userId', as: 'user' }); // Many-to-One with User
-User.hasMany(Ticket, { foreignKey: 'userId', as: 'tickets' });
 export default Ticket;

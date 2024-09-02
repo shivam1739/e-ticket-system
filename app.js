@@ -3,13 +3,15 @@ import * as dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import router from './routes/api.js';
 import cors from 'cors';
+import setupAssociations from './associations.js';
+import limiter from './config/rateLimit.js';
 
 const app = express();
 dotenv.config();
-
+setupAssociations();
 app.use(cors());
 app.use(express.json());
-
+app.use(limiter);
 app.use('/api/', router);
 app.get('/', (req, res) => {
     res.send('hello');
@@ -22,7 +24,7 @@ sequelize.authenticate()
     .catch(err => console.log('Error: ' + err));
 
 app.listen(PORT, () => {
-    sequelize.sync({ force: true }).then(() => {
+    sequelize.sync({ force: false }).then(() => {
         console.log('Database synced with models and associations');
     });
     console.log(`Running on PORT ${PORT}`);

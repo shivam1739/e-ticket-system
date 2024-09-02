@@ -10,8 +10,8 @@ const signUpController = async (req, res) => {
             return res.status(400).json({ error: 'Username, email, and password are required' });
         }
 
-        const response = await signupService(req.body, req.params.userType)
-        res.status(201).json(response);
+        await signupService(req.body, req.params.userType)
+        res.status(201).json({ success: true, message: 'user created successfully' });
 
     } catch (error) {
         console.error('Error creating user:', error);
@@ -27,6 +27,7 @@ const signInController = async (req, res) => {
             throw new Error('Missing required fields: email or password')
         }
         const userData = await getUserByEmail(req.body.email);
+        console.log("#######################################", userData)
 
         if (!userData) {
             return res.status(401).json({
@@ -48,8 +49,8 @@ const signInController = async (req, res) => {
         var token = jwt.sign(
             {
                 email: userData.email,
-                password: userData.password,
                 username: userData.username,
+                role: userData.Roles[0]
             },
             process.env.JWT_SECRET_KEY
         );
