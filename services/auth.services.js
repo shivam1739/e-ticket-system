@@ -116,7 +116,7 @@ const verifyToken = (token) => {
         const response = jwt.verify(token, process.env.JWT_SECRET_KEY);
         return response;
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 

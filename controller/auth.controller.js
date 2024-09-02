@@ -27,7 +27,6 @@ const signInController = async (req, res) => {
             throw new Error('Missing required fields: email or password')
         }
         const userData = await getUserByEmail(req.body.email);
-        console.log("#######################################", userData)
 
         if (!userData) {
             return res.status(401).json({
