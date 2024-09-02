@@ -1,4 +1,4 @@
-import { createEventService, getAllEventService, getEventByIdService } from "../services/event.services.js";
+import { createEventService, deleteEventService, getAllEventService, getEventByIdService } from "../services/event.services.js";
 
 
 export async function createEventController(req, res) {
@@ -39,6 +39,18 @@ export async function getEventByIdController(req, res) {
         console.error('Error getting Event:', error);
 
         return res.status(500).json({ message: error.message });
+    }
+}
+
+export async function deleteEventController(req, res) {
+    try {
+        const { eventId } = req.params;
+
+        await deleteEventService(eventId);
+
+        res.status(200).json({ message: `Event with ID ${eventId} deleted successfully.` });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 }
 

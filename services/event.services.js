@@ -116,3 +116,33 @@ export async function getEventByIdService(eventId) {
         throw new Error(`Failed to retrieve event with ID ${eventId}: ${error.message}`);
     }
 }
+
+
+/**
+ * Service to delete an event by its ID.
+ * @param {number} eventId - The ID of the event to delete.
+ * @returns {Promise<void>} - A promise that resolves when the event is deleted.
+ * @throws {Error} - Throws an error if the event is not found or if there is a problem deleting the event.
+ */
+export async function deleteEventService(eventId) {
+    try {
+
+        const event = await Event.findOne({
+            where: {
+                id: eventId,
+            },
+        });
+
+        if (!event) {
+            throw new Error('Event not found.');
+        }
+
+
+        await event.destroy();
+
+        console.log(`Event with ID ${eventId} deleted successfully.`);
+    } catch (error) {
+        console.error('Error deleting event by ID:', error);
+        throw new Error(`Failed to delete event with ID ${eventId}: ${error.message}`);
+    }
+}
