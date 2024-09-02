@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 import User from './user.js';
-import Ticket from './ticket.js';
 
 const Event = sequelize.define('Event', {
     id: {
@@ -28,10 +27,14 @@ const Event = sequelize.define('Event', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    ticketPrice: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
     createdBy: {
         type: DataTypes.INTEGER,
         references: {
-            model: User,  // Reference User model
+            model: User,
             key: 'id',
         },
         allowNull: false,
@@ -42,11 +45,5 @@ const Event = sequelize.define('Event', {
     tableName: 'events',
     timestamps: true,
 });
-
-Event.belongsTo(User, { foreignKey: 'createdBy' }); // An event is created by one user
-User.hasMany(Event, { foreignKey: 'createdBy' }); // A user can create many events
-
-Event.hasMany(Ticket, { foreignKey: 'eventId', as: 'tickets' }); // One-to-Many with Ticket
-Ticket.belongsTo(Event, { foreignKey: 'eventId', as: 'event' });
 
 export default Event;

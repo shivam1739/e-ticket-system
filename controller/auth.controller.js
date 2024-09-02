@@ -10,8 +10,8 @@ const signUpController = async (req, res) => {
             return res.status(400).json({ error: 'Username, email, and password are required' });
         }
 
-        const response = await signupService(req.body, req.params.userType)
-        res.status(201).json(response);
+        await signupService(req.body, req.params.userType)
+        res.status(201).json({ success: true, message: 'user created successfully' });
 
     } catch (error) {
         console.error('Error creating user:', error);

@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 import bcrypt from 'bcryptjs';
-import Event from './events.js';
-import Role from './role.js';
+import * as dotenv from 'dotenv';
+dotenv.config()
 
 
 const User = sequelize.define('User', {
@@ -39,11 +39,5 @@ const User = sequelize.define('User', {
             },
     },
 });
-
-User.belongsToMany(Role, { through: 'UserRoles' });
-Role.belongsToMany(User, { through: 'UserRoles' });
-
-User.hasMany(Event, { foreignKey: 'createdBy' }); // A user can create many events
-Event.belongsTo(User, { foreignKey: 'createdBy' }); // An event is created by one user
 
 export default User;
