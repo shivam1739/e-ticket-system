@@ -131,12 +131,21 @@ export async function deleteEventService(eventId) {
             where: {
                 id: eventId,
             },
+            include: {
+                model: Ticket,
+                as: 'tickets',
+            },
         });
 
         if (!event) {
             throw new Error('Event not found.');
         }
 
+        const isEventTicketSold = event.tickets.some((ticket) => ticket.status === 'sold')
+
+        if (isEventTicketSold) {
+            throw new Error('Event cannot be deleted because one or more tickets have already been sold.');
+        }
 
         await event.destroy();
 
